@@ -1,7 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser')
 const sequelize = require('./config/db')
-const User = require('./models/user.model')
+// const User = require('./models/user.model')
+const Post = require('./models/post.model')
+const postRoutes = require("./routes/posts")
+
 require('dotenv').config(); //  .env file
 const cors = require('cors');
 
@@ -20,6 +23,9 @@ let PORT = process.env.PORT || 3000;
 
 // Login and Register routes
 app.use('/api/v1/auth', authRoutes);
+
+//posts routes
+app.use('/api/v1/posts', postRoutes)
 
 app.get("/", (req, res) => {
     res.send("Hello World");
