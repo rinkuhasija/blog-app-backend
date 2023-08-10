@@ -1,7 +1,8 @@
 const { Sequelize } = require('sequelize');
+require('dotenv').config(); //  .env file
 
 //creating a database in sqlite
-const sequelize = new Sequelize("hello_world_db", "root", "Rinku@7882", {
+const sequelize = new Sequelize("hello_world_db", "root", process.env.DB_PWD, {
     dialect: "mysql",
     host: "localhost",
 });
