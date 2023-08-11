@@ -68,6 +68,10 @@ app.get("/", (req, res) => {
     res.send("Hello World");
 })
 
+app.get("/test-api", (req, res) => {
+    res.send("Hello test");
+})
+
 // Error handler middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
