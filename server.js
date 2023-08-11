@@ -47,16 +47,16 @@ app.post('/github-webhook', (req, res) => {
     exec('git pull origin main', (error, stdout, stderr) => {
         if (error) {
             console.error(`Error: ${error}`);
-            return res.status(500).send('Internal Server Error');
+            res.status(500).send('Internal Server Error');
         }
-        console.log(`stdout: ${stdout}`);
-        console.error(`stderr: ${stderr}`);
+        // console.log(`stdout: ${stdout}`);
+        // console.error(`stderr: ${stderr}`);
 
         // Restart Node.js application using PM2
         exec('pm2 restart all', (pm2Error, pm2Stdout, pm2Stderr) => {
             if (pm2Error) {
                 console.error(`Error during PM2 restart: ${pm2Error}`);
-                return res.status(500).send('Internal Server Error');
+                res.status(500).send('Internal Server Error');
             }
 
             console.log(`PM2 restart stdout: ${pm2Stdout}`);
