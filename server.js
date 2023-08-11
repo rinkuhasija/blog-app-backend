@@ -43,15 +43,28 @@ app.post('/github-webhook', (req, res) => {
         return res.status(401).send('Unauthorized');
     }
 
-    // Execute a pull or update process
-    exec('git pull origin main', (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Error: ${error}`);
+    // Execute a pull process
+    exec('git pull origin main', (pullError, pullStdout, pullStderr) => {
+        if (pullError) {
+            console.error(`Error during pull: ${pullError}`);
             return res.status(500).send('Internal Server Error');
         }
-        console.log(`stdout: ${stdout}`);
-        console.error(`stderr: ${stderr}`);
-        return res.status(200).send('Webhook Received and Processed');
+
+        console.log(`Pull stdout: ${pullStdout}`);
+        console.error(`Pull stderr: ${pullStderr}`);
+
+        // Restart Node.js application using PM2
+        exec('pm2 restart all', (pm2Error, pm2Stdout, pm2Stderr) => {
+            if (pm2Error) {
+                console.error(`Error during PM2 restart: ${pm2Error}`);
+                return res.status(500).send('Internal Server Error');
+            }
+
+            console.log(`PM2 restart stdout: ${pm2Stdout}`);
+            console.error(`PM2 restart stderr: ${pm2Stderr}`);
+
+            return res.status(200).send('Webhook Received, Processed, and Application Restarted');
+        });
     });
 });
 
@@ -63,13 +76,8 @@ function verifySignature(payload, signature, secret) {
         Buffer.from(signature, 'utf8')
     );
 }
-
 app.get("/", (req, res) => {
     res.send("Hello World");
-})
-
-app.get("/test-api", (req, res) => {
-    res.send("Hello test");
 })
 
 // Error handler middleware
