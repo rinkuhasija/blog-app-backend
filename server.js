@@ -5,10 +5,16 @@ const sequelize = require('./config/db')
 const Post = require('./models/post.model')
 const postRoutes = require("./routes/posts")
 
+//for github webhook
+const crypto = require('crypto');
+const { exec } = require('child_process');
+
 require('dotenv').config(); //  .env file
 const cors = require('cors');
 
 const app = express();
+
+const webhookSecret = process.env.GITHUB_SECRET;
 
 // import routes
 const authRoutes = require('./routes/auth')
@@ -26,6 +32,37 @@ app.use('/api/v1/auth', authRoutes);
 
 //posts routes
 app.use('/api/v1/posts', postRoutes)
+
+//github webhook post
+app.post('/github-webhook', (req, res) => {
+    const payload = JSON.stringify(req.body);
+    const signature = req.get('X-Hub-Signature-256');
+
+    if (!verifySignature(payload, signature, webhookSecret)) {
+        console.error('Invalid signature. Webhook not verified.');
+        return res.status(401).send('Unauthorized');
+    }
+
+    // Execute a pull or update process
+    exec('git pull origin main', (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error: ${error}`);
+            return res.status(500).send('Internal Server Error');
+        }
+        console.log(`stdout: ${stdout}`);
+        console.error(`stderr: ${stderr}`);
+        return res.status(200).send('Webhook Received and Processed');
+    });
+});
+
+function verifySignature(payload, signature, secret) {
+    const hmac = crypto.createHmac('sha256', secret);
+    const calculatedSignature = 'sha256=' + hmac.update(payload).digest('hex');
+    return crypto.timingSafeEqual(
+        Buffer.from(calculatedSignature, 'utf8'),
+        Buffer.from(signature, 'utf8')
+    );
+}
 
 app.get("/", (req, res) => {
     res.send("Hello World");
