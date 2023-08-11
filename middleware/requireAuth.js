@@ -17,7 +17,7 @@ const requireAuth = (req, res, next) => {
             console.log(user);
             next();
         } else {
-            return res.status(401).json({ message: 'You are not Authorized to edit this post' });
+            return res.status(401).json({ message: 'You are not Authorized ' });
         }
 
     } catch (err) {
