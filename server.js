@@ -53,16 +53,17 @@ app.post('/github-webhook', (req, res) => {
         // console.error(`stderr: ${stderr}`);
 
         // Restart Node.js application using PM2
-        exec('pm2 restart all', (pm2Error, pm2Stdout, pm2Stderr) => {
-            if (pm2Error) {
-                console.error(`Error during PM2 restart: ${pm2Error}`);
-                res.status(500).send('Internal Server Error');
-            }
+    });
 
-            console.log(`PM2 restart stdout: ${pm2Stdout}`);
-            console.error(`PM2 restart stderr: ${pm2Stderr}`);
-            return res.status(200).send('Webhook Received and Processed');
-        });
+    exec('pm2 restart all', (pm2Error, pm2Stdout, pm2Stderr) => {
+        if (pm2Error) {
+            console.error(`Error during PM2 restart: ${pm2Error}`);
+            res.status(500).send('Internal Server Error');
+        }
+
+        console.log(`PM2 restart stdout: ${pm2Stdout}`);
+        console.error(`PM2 restart stderr: ${pm2Stderr}`);
+        return res.status(200).send('Webhook Received and Processed');
     });
 });
 
