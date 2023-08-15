@@ -4,6 +4,8 @@ const sequelize = require('./config/db')
 // const User = require('./models/user.model')
 const Post = require('./models/post.model')
 const postRoutes = require("./routes/posts")
+const commentRoutes = require("./routes/comment")
+const Comment = require("./models/comment.model")
 
 //for github webhook
 const crypto = require('crypto');
@@ -32,6 +34,9 @@ app.use('/api/v1/auth', authRoutes);
 
 //posts routes
 app.use('/api/v1/posts', postRoutes)
+
+//comments routes
+app.use('/api/v1/comments', commentRoutes);
 
 //github webhook post
 app.post('/github-webhook', (req, res) => {
