@@ -13,8 +13,10 @@ const requireAuth = (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
         if (user === decoded.user) {
-            console.log(decoded.user);
-            console.log(user);
+            // console.log(decoded.user);
+            // console.log(user);
+            req.user = user;
+            // console.log(req.user);
             next();
         } else {
             return res.status(401).json({ message: 'You are not Authorized ' });
