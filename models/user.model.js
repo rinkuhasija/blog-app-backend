@@ -1,8 +1,9 @@
 const { DataTypes } = require('sequelize');
 // const sequelize = require('../server')
 const { Sequelize } = require('sequelize');
+require('dotenv').config()
 
-const sequelize = new Sequelize("hello_world_db", "root", "Rinku@7882", {
+const sequelize = new Sequelize("hello_world_db", "root", process.env.DB_PWD, {
     dialect: "mysql",
     host: "localhost",
 });
@@ -29,7 +30,7 @@ const User = sequelize.define("users", {
         allowNull: false,
         defaultValue: DataTypes.NOW,
     },
-    role : {
+    role: {
         type: DataTypes.STRING,
         allowNull: false,
         defaultValue: "user",
