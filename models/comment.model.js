@@ -3,7 +3,7 @@ const User = require("./user.model")
 const Post = require("./post.model")
 require('dotenv').config()
 
-const sequelize = new Sequelize("hello_world_db", "root", "Rinku@7882", {
+const sequelize = new Sequelize("hello_world_db", "root", process.env.DB_PWD, {
     dialect: "mysql",
     host: "localhost",
 });
